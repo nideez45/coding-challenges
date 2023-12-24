@@ -1,4 +1,4 @@
-# coding-challenges
+# Write Your Own HTTP(S) Load Tester
 Usage example:
 ```
 % python3 load-tester.py -u https://google.com -n 10 -c 10 -m GET
