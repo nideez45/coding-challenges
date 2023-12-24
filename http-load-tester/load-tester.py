@@ -36,9 +36,9 @@ async def main():
     
     # Optional arguments with default values
     parser.add_argument('-n', type=int, default=1, help='Number of requests')
-    parser.add_argument('-c', type=int, default=1, help='Number of concurrent requests')
+    parser.add_argument('-c', type=int, default=1, help='Number of concurrent users')
     
-    parser.add_argument('-m', '--method', type=str, help='HTTP method (e.g., get)', required=True)
+    parser.add_argument('-m', '--method', type=str, help='HTTP method (e.g., get,post)', required=True)
 
     # Parse the command-line arguments
     args = parser.parse_args()
