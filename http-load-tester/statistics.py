@@ -37,4 +37,4 @@ class Statistics:
         print("Failed requests (4xx, 5xx)..................:", self.failure)
         print("Total Request Time (s) (Min, Max, Mean).....:", round(self.total_times[0],2),",",round(self.total_times[1],2),",", round(self.total_times[2]/self.total_request,2))
         print("Time to First Byte (s) (Min, Max, Mean).....:", round(self.ttfb[0],2),",", round(self.ttfb[1],2), ",",round(self.ttfb[2]/self.total_request,2))
-        #print("Time to Last Byte (s) (Min, Max, Mean)......:", round(self.ttlb[0],2),",", round(self.ttlb[1],2), ",",round(self.ttlb[2]/self.total_request,2))
+        print("Time to Last Byte (s) (Min, Max, Mean)......:", round(self.ttlb[0],2),",", round(self.ttlb[1],2), ",",round(self.ttlb[2]/self.total_request,2))

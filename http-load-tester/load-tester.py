@@ -1,23 +1,39 @@
-import httpx
+import aiohttp
 import asyncio
 import argparse
 import time
 
 from statistics import Statistics
-        
+
+request_start = {}
+
+async def on_request_start(
+        session, trace_config_ctx, params):
+    print("request started")
+    request_start['time'] = time.time()
+    print(time.time())
+
 async def simulate_user(url,http_method,stats:Statistics):
+    trace_config = aiohttp.TraceConfig()
+    trace_config.on_request_chunk_sent.append(on_request_start)
+
     if http_method == 'get':
         start_time = time.time()
-        async with httpx.AsyncClient() as client: 
-            response = await client.get(url)
+        print(start_time)
+        async with aiohttp.ClientSession(trace_configs=[trace_config]) as session:
+            response = await session.get(url)
+            await response.content.readexactly(1)
+            ttfb = time.time() - request_start['time']
+            await response.content.read()
+            ttlb = time.time() - request_start['time']
         end_time = time.time()
+        print(end_time)
         total_time = end_time-start_time
-        ttfb = response.elapsed.total_seconds()
-        ttlb = total_time-ttfb
+        
         stats.updateTTFB(ttfb)
         stats.updateTTLB(ttlb)
         stats.updateTotalTime(total_time)
-        status = int(response.status_code / 100)
+        status = int(response.status / 100)
         if status == 2 or status == 3:
             stats.success+=1
         else:
