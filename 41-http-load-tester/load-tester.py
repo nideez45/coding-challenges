@@ -1,51 +1,15 @@
-import requests
+import httpx
 import asyncio
 import argparse
 import time
 
-class Statistics:
-    def __init__(self,total_request) -> None:
-        self.success = 0
-        self.failure = 0
-        self.ttfb = [100,-1,0]
-        self.ttlb = [100,-1,0]
-        self.total_times = [100,-1,0]
-        self.total_request = total_request
-    
-    def updateTTFB(self,value):
-        self.ttfb[2]+=value
-        if self.ttfb[0]>value:
-            self.ttfb[0] = value
-        if self.ttfb[1]<value:
-            self.ttfb[1] = value
-            
-    def updateTTLB(self,value):
-        self.ttlb[2]+=value
-        if self.ttlb[0]>value:
-            self.ttlb[0] = value
-        if self.ttlb[1]<value:
-            self.ttlb[1] = value
-            
-    def updateTotalTime(self,value):
-        self.total_times[2]+=value
-        if self.total_times[0]>value:
-            self.total_times[0] = value
-        if self.total_times[1]<value:
-            self.total_times[1] = value  
-    
-    def printStats(self):
-        print("Results....")
-        print("Successful requests (2xx, 3xx)..............:", self.success)
-        print("Failed requests (4xx, 5xx)..................:", self.failure)
-        print("Total Request Time (s) (Min, Max, Mean).....:", round(self.total_times[0],2),",",round(self.total_times[1],2),",", round(self.total_times[2]/self.total_request,2))
-        print("Time to First Byte (s) (Min, Max, Mean).....:", round(self.ttfb[0],2),",", round(self.ttfb[1],2), ",",round(self.ttfb[2]/self.total_request,2))
-        print("Time to Last Byte (s) (Min, Max, Mean)......:", round(self.ttlb[0],2),",", round(self.ttlb[1],2), ",",round(self.ttlb[2]/self.total_request,2))
-        
+from statistics import Statistics
         
 async def simulate_user(url,http_method,stats:Statistics):
     if http_method == 'get':
         start_time = time.time()
-        response = requests.get(url)
+        async with httpx.AsyncClient() as client: 
+            response = await client.get(url)
         end_time = time.time()
         total_time = end_time-start_time
         ttfb = response.elapsed.total_seconds()
@@ -97,9 +61,11 @@ async def main():
     global sem
     sem = asyncio.Semaphore(concurrent_requests)
     stats = Statistics(num_requests)
-    tasks = [safe_simulate_user(url,http_method,stats) for _ in range(num_requests)]
+    tasks = [asyncio.ensure_future(safe_simulate_user(url,http_method,stats)) for _ in range(num_requests)]
+    start_time = time.time()
     await asyncio.gather(*tasks)
-    stats.printStats()
+    end_time = time.time()
+    stats.printStats(end_time-start_time)
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
