@@ -1,7 +1,7 @@
-import socket
 import argparse
 from urllib.parse import urlparse
 from get import make_get_request
+from delete import make_delete_request
 
 
 def main():
@@ -17,13 +17,15 @@ def main():
     verbose = args.verbose
     method = args.method.lower()
 
-    if method != 'get':
-        print("Currently only works for GET")
-        exit()
+    
 
     if method == 'get':
         make_get_request(url,verbose)
-
+    elif method == 'delete':
+        make_delete_request(url,verbose)
+    else:
+        print("Currently {} is not supported".format(method))
+        exit()
 
 if __name__ == '__main__':
     main()
