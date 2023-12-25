@@ -1,30 +1,9 @@
-import socket 
-from urllib.parse import urlparse
+
+from connection import make_connection
 
 def make_delete_request(url,verbose):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    parsed_url = urlparse(url)
-    protocol = parsed_url.scheme
-    hostname = parsed_url.hostname
-    path = parsed_url.path
-    if not path:
-        path = '/'
-    query = parsed_url.query
 
-    port = 0
-    if protocol == 'http':
-        port = 80
-    elif protocol == 'https':
-        port = 443
-    else:
-        print("Unknown protocol")
-        exit()
-        
-    print("Connecting to {} port {}".format(hostname,port))
-    print()
-    
-    client_socket.connect((hostname,port))
-    # create the http content
+    path,hostname,client_socket = make_connection(url)
     
     request = f"DELETE {path} HTTP/1.1\r\nHost: {hostname}\r\n"
     headers = {'Connection':'close'}
@@ -36,7 +15,14 @@ def make_delete_request(url,verbose):
         print("> " + "\r\n> ".join(request_lines[:-2]))
         print()
     client_socket.sendall(request.encode('utf-8'))
-    response = client_socket.recv(4096).decode("utf-8")
+    
+    response = ''
+    while True:
+        chunk = client_socket.recv(4096).decode("utf-8")
+        if not chunk:
+            break
+        response += chunk
+        
     if verbose:
         print("< " + response.replace("\r\n", "\r\n< "))
     else:
