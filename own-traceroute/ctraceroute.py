@@ -31,7 +31,7 @@ def receive_icmp(domain,ipv4_address):
             expected_port+=1
             hop+=1
         elif src_port>expected_port:
-            diff = expected_port-src_port+1
+            diff = src_port-expected_port+1
             for _ in range(diff):
                 print(hop+_,"* * *")
                 hop+=1
