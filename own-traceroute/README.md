@@ -31,3 +31,11 @@ Traceroute to twitter.com (104.244.42.193)... max 30 hops
 14 * * *
 15 104.244.42.193 (104.244.42.193) 3888.68 ms
 ```
+
+ICMP destination unreacble / time to live exceeded can be used to identify the routers in between
+host and the domain
+<a href="https://ibb.co/n821T3L"><img src="https://i.ibb.co/wrHQTJz/Screenshot-from-2023-12-25-20-21-42.png" alt="Screenshot-from-2023-12-25-20-21-42" border="0" /></a>
+```
+UDP messages are sent with increasing time to live value and destination port values starting with 1 and 33434 respectively.
+The last 8 bytes contain the udp header information, which can be used to find the destination port number and order the icmp messages.
+```
