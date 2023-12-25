@@ -14,17 +14,17 @@ options:
 Example
 ```
 % sudo python3 ctraceroute.py google.com
-Traceroute to google.com (142.251.42.14)... max 30 hops
-1 _gateway ( 192.168.43.1 )
+Traceroute to google.com (142.250.193.110)... max 30 hops
+1 _gateway ( 192.168.43.1 ) 47.92 ms
 2 * * *
 3 * * *
 4 * * *
-5 192.168.31.20 ( 192.168.31.20 )
+5 * * *
 6 * * *
 7 * * *
-8 * * *
-9 nsg-static-117.206.71.182.airtel.in ( 182.71.206.117 )
-10 116.119.106.152 ( 116.119.106.152 )
+8 nsg-static-113.206.71.182.airtel.in ( 182.71.206.113 ) 81.15 ms
+9 * * *
+10 * * *
 11 * * *
 12 * * *
 13 * * *
@@ -32,7 +32,5 @@ Traceroute to google.com (142.251.42.14)... max 30 hops
 15 * * *
 16 * * *
 17 * * *
-18 * * *
-19 * * *
-20 bom12s19-in-f14.1e100.net ( 142.251.42.14 )
+18 maa05s24-in-f14.1e100.net ( 142.250.193.110 ) 83.47 ms
 ```

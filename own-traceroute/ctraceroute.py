@@ -1,8 +1,10 @@
 import socket 
 import argparse
 import threading
-
+import time
 done = False
+
+Time = {}
 
 def reverse_dns_lookup(ip_address):
     try:
@@ -29,7 +31,7 @@ def receive_icmp(domain,ipv4_address):
             continue
         
         if src_port == expected_port:
-            print(hop,reverse_dns_lookup(addr),"(",addr,")")
+            print(hop,reverse_dns_lookup(addr),"(",addr,")",round((time.time()-Time[src_port])*1000,2),"ms")
             expected_port+=1
             hop+=1
         elif src_port>expected_port:
@@ -37,7 +39,7 @@ def receive_icmp(domain,ipv4_address):
             for _ in range(diff):
                 print(hop+_,"* * *")
             hop+=diff
-            print(hop,reverse_dns_lookup(addr),"(",addr,")")
+            print(hop,reverse_dns_lookup(addr),"(",addr,")",round((time.time()-Time[src_port])*1000,2),"ms")
             expected_port=src_port+1
             hop+=1
         if addr == ipv4_address:
@@ -49,9 +51,11 @@ def send_udp(domain):
     for i in range(30):
         if done:
             break
+        
         client_socket = socket.socket(family=socket.AF_INET,type=socket.SOCK_DGRAM)
         client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_TTL, ttl)
         client_socket.sendto("".encode(),(domain,dst_port))
+        Time[dst_port] = time.time()
         dst_port+=1
         ttl+=1
     
