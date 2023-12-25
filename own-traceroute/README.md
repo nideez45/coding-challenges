@@ -13,7 +13,7 @@ options:
 ```
 Example
 ```
-% sudo sudo python3 ctraceroute.py twitter.com
+%sudo python3 ctraceroute.py twitter.com
 Traceroute to twitter.com (104.244.42.193)... max 30 hops
 1 _gateway (192.168.43.1) 18.11 ms
 2 192.168.29.10 (192.168.29.10) 117.96 ms
