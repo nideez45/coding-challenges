@@ -24,8 +24,10 @@ def receive_icmp(domain,ipv4_address):
     while True:
         rec_packet, addr = icmp_socket.recvfrom(4096)
         addr = addr[0]
-
         src_port = int.from_bytes(rec_packet[-6:-4], byteorder='big')
+        if src_port<33434 or src_port>33464:
+            continue
+        
         if src_port == expected_port:
             print(hop,reverse_dns_lookup(addr),"(",addr,")")
             expected_port+=1
@@ -34,7 +36,7 @@ def receive_icmp(domain,ipv4_address):
             diff = src_port-expected_port+1
             for _ in range(diff):
                 print(hop+_,"* * *")
-                hop+=1
+            hop+=diff
             print(hop,reverse_dns_lookup(addr),"(",addr,")")
             expected_port=src_port+1
             hop+=1
