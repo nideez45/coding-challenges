@@ -18,8 +18,7 @@ def main():
     verbose = args.verbose
     method = args.method.lower()
     json_paylod = args.json
-    print(json_paylod)
-
+    
     if method == 'get':
         make_get_request(url,verbose)
     elif method == 'delete':
