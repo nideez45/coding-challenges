@@ -8,13 +8,10 @@ def make_request(url,verbose,method):
     protocol = parsed_url.scheme
     hostname = parsed_url.hostname
     path = parsed_url.path
+    if not path:
+        path = '/'
     query = parsed_url.query
 
-    print(f"Protocol: {protocol}")
-    print(f"Hostname: {hostname}")
-    print(f"Path: {path}")
-    print(f"Query: {query}")
-    print()
     port = 0
     if protocol == 'http':
         port = 80
@@ -23,18 +20,36 @@ def make_request(url,verbose,method):
     else:
         print("Unknown protocol")
         exit()
+        
+    print("Connecting to {} port {}".format(hostname,port))
+    print()
+    
     client_socket.connect((hostname,port))
     # create the http content
     
     request = f"GET {path} HTTP/1.1\r\nHost: {hostname}\r\n"
-    headers = None
+    headers = {'Connection':'close'}
     if headers:
         request += "\r\n".join([f"{key}: {value}" for key, value in headers.items()]) + "\r\n"
     request += "\r\n"
-    
+    if verbose:
+        request_lines = request.split("\r\n")
+        print("> " + "\r\n> ".join(request_lines[:-2]))
+        print()
     client_socket.sendall(request.encode('utf-8'))
     response = client_socket.recv(4096).decode("utf-8")
-    print(response)
+    if verbose:
+        print("< " + response.replace("\r\n", "\r\n< "))
+    else:
+        # print only the response body ignoring the response headers
+        double_crlf_index = response.find('\r\n\r\n')
+    
+        if double_crlf_index != -1:
+            response_body = response[double_crlf_index + 4:]
+            print(response_body)
+        else:
+            print("Invalid response format (missing double CRLF)")
+    client_socket.close()
 
 def main():
     parser = argparse.ArgumentParser(description='Custom cURL')
@@ -53,11 +68,6 @@ def main():
         print("Currently only works for GET")
         exit()
 
-    # Print the values for demonstration
-    print(f"URL: {url}")
-    print(f"Verbose: {verbose}")
-    print(f"HTTP Method: {method}")
-    print()
     make_request(url,verbose,method)
 
 
