@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import random 
+from db_helper import get_random_challenge
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -31,6 +32,8 @@ async def get_quote(ctx):
     quote = response.json()['quote']
     await ctx.send(quote)
 
-
+@client.command(name='challenge', help='Gives a random challenge!')
+async def get_challenge(ctx):
+    await ctx.send(get_random_challenge())
 
 client.run(TOKEN)
