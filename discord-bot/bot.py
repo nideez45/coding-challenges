@@ -77,6 +77,6 @@ async def add_new_challenge(ctx,challenge_url):
     title = get_html_title(challenge_url)
     challenge_name = title.split("|")[0][:-1]
     await ctx.send(add_challenge(challenge_name,challenge_url))
-    
-    
+       
+
 client.run(TOKEN)
