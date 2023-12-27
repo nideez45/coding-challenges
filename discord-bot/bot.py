@@ -5,6 +5,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import random 
 from db_helper import get_random_challenge
+from db_helper import get_all_challenge
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -36,4 +37,14 @@ async def get_quote(ctx):
 async def get_challenge(ctx):
     await ctx.send(get_random_challenge())
 
+@client.command(name='list', help='List all challenges!')
+async def list_challenge(ctx):
+    await ctx.send(get_all_challenge())
+
+@client.command(name='add', help='Add a new challenge!')
+async def add_new_challenge(ctx,challenge_url):
+    print(challenge_url)
+    ctx.send("Done")
+    
+    
 client.run(TOKEN)
