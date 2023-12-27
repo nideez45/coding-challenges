@@ -43,9 +43,16 @@ def add_challenge(challenge_name,url):
     db = client['discord-bot']
     collection = db['challenges']
 
-    collection.insert_one(data)
+    existing_record = collection.find_one({"url": url})
+    response = ""
+    if existing_record is None:
+        collection.insert_one(data)
+        response = f"Challenge added: {challenge_name}: {url}"
+    else:
+        response = "Challenge already exists!"
 
     client.close()
+    return response
 
 
 def main():
