@@ -9,6 +9,8 @@ class Deserializer:
             return cls.deserialize_integer(response)
         elif response[0] == "$":
             return cls.deserialize_bulk_string(response)
+        elif response[0] == '-':
+            return cls.deserialize_error(response)
     
     @classmethod
     def deserialize_bulk_string(cls, string):
@@ -28,4 +30,8 @@ class Deserializer:
     
     @classmethod
     def deserialize_integer(cls,string):
-        return int(string[1:-2])
+        return "(integer) {}".format(int(string[1:-2]))
+    
+    @classmethod
+    def deserialize_error(cls,string):
+        return "(error) {}".format(string[1:-2])

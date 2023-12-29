@@ -17,12 +17,16 @@ Supported commands
 2. ECHO <some string>
 3. SET <key> <value>
 4. GET <key>
+5. EXISTS <key>
+6. INCR <key>
+7. DECR <key>
+8. FLUSHALL
 """
 
 def serialize(command_string):
     lst = command_string.split(' ')
     lst[0] = lst[0].lower()
-    if lst[0] not in ["ping","echo","set","get"]:
+    if lst[0] not in ["ping","echo","set","get","exists","incr","decr","flushall"]:
         raise ValueError("Command doesnt exist")
     
     return Serializer.serialize(lst)
@@ -43,9 +47,8 @@ def handle_connection(hostname,port):
             serialized_command = serialize(input_command)
             redis_socket.send(serialized_command.encode('utf-8'))
             response = redis_socket.recv(4096).decode('utf-8')
-
             response = Deserializer.deserialize(response)
-            if not response:
+            if response == None:
                 print("(nil)")
             else:
                 print(response)
