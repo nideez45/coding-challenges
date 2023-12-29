@@ -2,7 +2,7 @@ import socket
 import argparse
 from serializer import *
 from deserializer import *
-
+import shlex
 """
     command1  =  *3\r\n$3\r\nSET\r\n$5\r\nvalue\r\n$1\r\n1\r\n
     response1 =  +OK\r\n
@@ -31,12 +31,12 @@ class RedisClient:
         self.redis_socket.connect((hostname, port))
 
     def _serialize(self, command_string):
-        lst = command_string.split(' ')
-        lst[0] = lst[0].lower()
-        if lst[0] not in ["ping", "echo", "set", "get", "exists", "incr", "decr", "flushall"]:
+        tokens = shlex.split(command_string)
+        tokens[0] = tokens[0].lower()
+        if tokens[0] not in ["ping", "echo", "set", "get", "exists", "incr", "decr", "flushall"]:
             raise ValueError("Command doesn't exist")
 
-        return Serializer.serialize(lst)
+        return Serializer.serialize(tokens)
 
     def execute_command(self, command):
         serialized_command = self._serialize(command)
